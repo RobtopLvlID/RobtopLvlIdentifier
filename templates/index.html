@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RobTop lvl Identifier</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+
+
+  <body class="d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
+    <header class="mb-3">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="title" class="logo img-fluid" />
+    </header>
+
+    <img class="disclaimer img-fluid mb-3" src="{{ url_for('static', filename='gold.png') }}" alt="gold" style="max-width: 40%;" />
+
+    <div id="drop-area" class="position-relative w-100" style="max-width: 500px; aspect-ratio: 10 / 7;">
+      <img class="preview" alt="preview" />
+      <img class="marco position-absolute top-0 start-0 w-100 h-100" src="{{ url_for('static', filename='marco.png') }}" alt="marco" />
+      <div class="content d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100">
+        <input type="file" class="file" id="fileElem" accept="image/*" hidden />
+        <label for="fileElem" class="btn-upload"><i class="bi bi-upload fs-1"></i></label>
+      </div>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      const dropArea = document.getElementById('drop-area');
+      const resultDiv = document.getElementById('result');
+      const preview = document.querySelector('#drop-area .preview');
+
+      dropArea.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropArea.classList.add('highlight');
+      });
+
+      dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('highlight');
+      });
+
+      dropArea.addEventListener('drop', e => {
+        e.preventDefault();
+        dropArea.classList.remove('highlight');
+        const file = e.dataTransfer.files[0];
+        uploadImage(file);
+      });
+
+      document.getElementById('fileElem').addEventListener('change', e => {
+        const file = e.target.files[0];
+        uploadImage(file);
+      });
+
+      function uploadImage(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        resultDiv.innerHTML = '⌛ Processing image...';
+
+        fetch('/predict', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          resultDiv.innerHTML = `✅ Level detected: <strong>${data.nivel}</strong><br>🔢 Confidence: <strong>${data.confianza}%</strong>`;
+        })
+        .catch(() => {
+          resultDiv.innerHTML = '❌ Error.';
+        });
+      }
+    </script>
+  </body>
+</html>
