@@ -48,3 +48,54 @@ def extract_frames(video_path, output_folder, interval=30):
 
     cap.release()
 ```
+- Step 3: Data Preparation
+In the previous step, the images from the frames were saved in an orderly manner into folders named after each level. Now, it is necessary to prepare the data in the most optimal way for use with the MobileNetV2 model, so that during the convolution process it can classify and recognize patterns correctly. This involves taking several aspects into account, such as image size, batch size, vector sizes, color channels, and many other tedious but essential details. The following script details this process:
+```python
+import tensorflow as tf
+import numpy as np
+import json
+import matplotlib.pyplot as plt
+from keras.src.legacy.preprocessing.image import ImageDataGenerator
+from keras.src.callbacks import EarlyStopping, ModelCheckpoint
+from keras.src.applications.mobilenet_v2 import preprocess_input, MobileNetV2
+from keras.src import layers, models
+
+# Path to the train data
+data_path = "vidframes"
+
+# Callbacks
+callbacks = [
+    EarlyStopping(patience=10, restore_best_weights=True),
+    ModelCheckpoint("best_model.keras", save_best_only=True)
+]
+
+# Data Augmentation + Preprocesamiento compatible con MobileNetV2
+datagen = ImageDataGenerator(
+    preprocessing_function=preprocess_input,
+    validation_split=0.2,
+    rotation_range=15,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.1,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    brightness_range=[0.8, 1.2],
+    fill_mode='nearest'
+)
+
+train_data = datagen.flow_from_directory(
+    data_path,
+    target_size=(160, 160),  # Tamaño óptimo para MobileNetV2
+    batch_size=32,
+    class_mode='categorical',
+    subset='training'
+)
+
+val_data = datagen.flow_from_directory(
+    data_path,
+    target_size=(160, 160),
+    batch_size=32,
+    class_mode='categorical',
+    subset='validation'
+)
+```
