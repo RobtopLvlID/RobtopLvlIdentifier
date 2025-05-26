@@ -17,10 +17,10 @@ A few months ago, as I began exploring the field of artificial intelligence, I w
 
 ---
 
-Step 1: Data Collection  
+- Step 1: Data Collection  
 As with any machine learning project, the initial step that must be taken—and the one that will ultimately determine the quality of the model—is gathering the training data. For this project, I spent several days recording all the levels that the model would later recognize using images. However, I could not train the model using video footage directly, which leads us to the second step. 
 
-Step 2: Frame Extraction  
+- Step 2: Frame Extraction  
 The proper way to train a convolutional neural network is by using images. Therefore, I extracted frames from the videos I had recorded earlier. Naturally, I didn’t do this manually but instead used OpenCV with the following script:  
 ```python
 import os
