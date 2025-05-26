@@ -33,7 +33,7 @@ def extract_frames(video_path, output_folder, interval=30):
     frame_count = 0
     saved_frames = 0
 
-    while cap.isOpened():  # <- aquí faltaban los paréntesis ()
+    while cap.isOpened(): 
         ret, frame = cap.read()
         if not ret:
             break
