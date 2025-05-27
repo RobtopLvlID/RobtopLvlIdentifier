@@ -49,7 +49,7 @@ def extract_frames(video_path, output_folder, interval=30):
     cap.release()
 ```
 - Step 3: Data Preparation
-- 
+
 In the previous step, the images from the frames were saved in an orderly manner into folders named after each level. Now, it is necessary to prepare the data in the most optimal way for use with the MobileNetV2 model, so that during the convolution process it can classify and recognize patterns correctly. This involves taking several aspects into account, such as image size, batch size, vector sizes, color channels, and many other tedious but essential details. The following script details this process:
 ```python
 import tensorflow as tf
