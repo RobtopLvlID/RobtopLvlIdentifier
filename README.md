@@ -69,7 +69,7 @@ callbacks = [
     ModelCheckpoint("best_model.keras", save_best_only=True)
 ]
 
-# Data Augmentation + Preprocesamiento compatible con MobileNetV2
+# Data Augmentation + Preprocess MobileNetV2
 datagen = ImageDataGenerator(
     preprocessing_function=preprocess_input,
     validation_split=0.2,
@@ -85,7 +85,7 @@ datagen = ImageDataGenerator(
 
 train_data = datagen.flow_from_directory(
     data_path,
-    target_size=(160, 160),  # Tamaño óptimo para MobileNetV2
+    target_size=(160, 160),  # Size for MobileNetV2
     batch_size=32,
     class_mode='categorical',
     subset='training'
