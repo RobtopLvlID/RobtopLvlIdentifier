@@ -105,4 +105,5 @@ val_data = datagen.flow_from_directory(
 )
 ```
 - Step 4: Model Training
-  
+In this step, the model is ready to begin its training process.
+After data preparation, the neural network can generalize to more information to order to recognize more special cases, such as if an image if rotated or deformed, among others. At this point i use an pre-trained Keras model called MobileNetV2. By loading it, this will me train my model using the transfer learning technique so i don´t create my own Convolutional Neuronal Network from scratch and deal with all the problems that entails
