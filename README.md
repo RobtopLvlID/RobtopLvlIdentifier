@@ -107,3 +107,50 @@ val_data = datagen.flow_from_directory(
 - Step 4: Model Training
 In this step, the model is ready to begin its training process.
 After data preparation, the neural network can generalize to more information to order to recognize more special cases, such as if an image if rotated or deformed, among others. At this point i use an pre-trained Keras model called MobileNetV2. By loading it, this will me train my model using the transfer learning technique so i don´t create my own Convolutional Neuronal Network from scratch and deal with all the problems that entails
+
+Import MobileNetV2 Pre-trained models from keras and load the model in a variable:
+
+```python
+from keras.src.legacy.preprocessing.image import ImageDataGenerator
+from keras.src.callbacks import EarlyStopping, ModelCheckpoint
+from keras.src.applications.mobilenet_v2 import preprocess_input, MobileNetV2
+from keras.src import layers, models
+
+base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(160, 160, 3))
+```
+
+Transfer learning process and config:
+
+```python
+for layer in base_model.layers:
+    layer.trainable = False
+
+for layer in base_model.layers[-30:]:  # Latest 30 layers
+    layer.trainable = True
+
+# Complete Model
+model = models.Sequential([
+    base_model,
+    layers.GlobalAveragePooling2D(),
+    layers.Dense(256, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(train_data.num_classes, activation='softmax')  
+])
+```
+Compile and Training Process:
+
+```python
+# Compile
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.0005),
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Training
+history = model.fit(train_data, validation_data=val_data, epochs=50, callbacks=callbacks)
+with open("train_history.json", "w") as f:
+    json.dump(history.history, f)
+
+# Save Model .keras
+model.save("gd_level_classifier.keras")
