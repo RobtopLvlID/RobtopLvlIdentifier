@@ -7,6 +7,7 @@
 <div align="center">
   <h2>Model capable of identifying all levels of Robtop (Geometry Dash :p) 🤖</h2> 
   <img src="static/robtop.png" alt="Preview" />
+  <img src="static/08142-ezgif.com-video-to-gif-converter.gif" alt="Preview" />
 </div>
 
 ---
